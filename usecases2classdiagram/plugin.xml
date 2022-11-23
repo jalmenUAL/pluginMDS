@@ -1,0 +1,23 @@
+<plugin
+	id="usecases2classdiagram"
+	name="Generation of User Interfaces from Use Cases"
+	description="Modelado y Diseño del Software"
+	provider="Jesus Almendros and Luis Iribarne, 2018"
+	class="uc2i.Uc2i">
+        
+	<actionSets>
+		<actionSet id="uc2i.actionset">
+			<action 
+				id="uc2i.actions.Uc2iActions"
+				actionType="generalAction"
+				label="Use Case Diagram to Class Diagram"
+				tooltip="Jesus Almendros and Luis Iribarne, 2018"
+				style="normal" 
+				icon="icons/mds.png"
+				menuPath="Tools/Report">
+				<actionController 
+class="uc2i.actions.Uc2iActions"/>
+			</action>
+		</actionSet>
+	</actionSets>
+</plugin>
