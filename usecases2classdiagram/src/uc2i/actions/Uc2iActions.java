@@ -306,23 +306,26 @@ public class Uc2iActions implements VPActionController {
 			
 			if (tousecase.hasStereotype("event")) {
 					 
-				String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_")+list);
-				IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
-				IAttribute attribute = IModelElementFactory.instance().createAttribute();
-				attribute.setName(tousecase.getName().replaceAll(" ", "_"));
-				attribute.setType("event");
-				actor_from.addAttribute(attribute);
-				IOperation event_handler = IModelElementFactory.instance().createOperation();
-				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
-				event_handler.setReturnType("void");
-				actor_from.addOperation(event_handler);
-				//TRANSIT TO
-				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				transitProp.addValue(attribute);
-				transitProp.addValue(event_handler);
+				
 				
 				if (fromactor.hasStereotype("external")) {
+					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_")+list);
 					externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+				} else {
+					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_")+list);
+					IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
+					IAttribute attribute = IModelElementFactory.instance().createAttribute();
+					attribute.setName(tousecase.getName().replaceAll(" ", "_"));
+					attribute.setType("event");
+					actor_from.addAttribute(attribute);
+					IOperation event_handler = IModelElementFactory.instance().createOperation();
+					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+					event_handler.setReturnType("void");
+					actor_from.addOperation(event_handler);
+					//TRANSIT TO
+					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+					transitProp.addValue(attribute);
+					transitProp.addValue(event_handler);
 				}
 				 
 
@@ -359,18 +362,21 @@ public class Uc2iActions implements VPActionController {
 				if (fromactor.hasStereotype("external")) {
 					externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
 				}
+				else {
+					IOperation event_handler = IModelElementFactory.instance().createOperation();
+					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+					event_handler.setReturnType("void");
+					actor_from.addOperation(event_handler);
+					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+					transitProp.addValue(event_handler);
+				}
 				
 		        nassociation.setFrom(actor_from);
 				nassociation.setTo(usecase_to);
 				
-				IOperation event_handler = IModelElementFactory.instance().createOperation();
-				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
-				event_handler.setReturnType("void");
-				actor_from.addOperation(event_handler);
-				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				transitProp.addValue(event_handler);
 				
-				if (actor_from.hasStereotype("external")) {
+				
+				if (fromactor.hasStereotype("external")) {
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
 					associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
@@ -485,7 +491,7 @@ public class Uc2iActions implements VPActionController {
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(event_handler);
 				
-				if (actor_from.hasStereotype("external")) {
+				if (fromactor.hasStereotype("external")) {
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
 					associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
