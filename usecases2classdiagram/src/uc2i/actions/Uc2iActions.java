@@ -361,7 +361,7 @@ public class Uc2iActions implements VPActionController {
 				
 				
 				
-				if (actor_from.hasStereotype("external")) {
+				if (fromactor.hasStereotype("external")) {
 					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 					
@@ -395,7 +395,7 @@ public class Uc2iActions implements VPActionController {
 					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 					event_handler.setReturnType("void");
 					
-					if (actor_from.hasStereotype("external")) {
+					if (fromactor.hasStereotype("external")) {
 						String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
 						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 						
@@ -438,7 +438,7 @@ public class Uc2iActions implements VPActionController {
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
 					
-				if (actor_from.hasStereotype("external")) {
+				if (fromactor.hasStereotype("external")) {
 					
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
@@ -506,7 +506,7 @@ public class Uc2iActions implements VPActionController {
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
-				if (actor_from.hasStereotype("external")) {
+				if (fromactor.hasStereotype("external")) {
 					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 					
@@ -539,7 +539,7 @@ public class Uc2iActions implements VPActionController {
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
 					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 					event_handler.setReturnType("void");
-					if (actor_from.hasStereotype("external")) {
+					if (fromactor.hasStereotype("external")) {
 						String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
 						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 						
@@ -581,8 +581,8 @@ public class Uc2iActions implements VPActionController {
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
-				actor_from.addOperation(event_handler);
- 				if (actor_from.hasStereotype("external")) {
+				
+ 				if (fromactor.hasStereotype("external")) {
 					
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
