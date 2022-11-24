@@ -588,7 +588,7 @@ public class Uc2iActions implements VPActionController {
 					String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 					
-					String id_from = actors_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
+					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 					 
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -602,9 +602,9 @@ public class Uc2iActions implements VPActionController {
 					associationToEnd.setMultiplicity("1");
 					associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
 					//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-					associationToEnd.setNavigable(1);
+					associationFromEnd.setNavigable(1);
 				}
-				 
+				else {
 				String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 				IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 				IAttribute attribute = IModelElementFactory.instance().createAttribute();
@@ -619,6 +619,7 @@ public class Uc2iActions implements VPActionController {
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(attribute);
 				transitProp.addValue(event_handler);
+				}
 
 			} 
 			else
@@ -630,7 +631,7 @@ public class Uc2iActions implements VPActionController {
 						String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
 						IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 						
-						String id_from = actors_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
+						String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 						IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						 
 						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -644,9 +645,9 @@ public class Uc2iActions implements VPActionController {
 						associationToEnd.setMultiplicity("1");
 						associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
 						//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-						associationToEnd.setNavigable(1);
+						associationFromEnd.setNavigable(1);
 					}
-					
+					else {
 					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
@@ -656,6 +657,7 @@ public class Uc2iActions implements VPActionController {
 					//TRANSIT TO
 					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 					transitProp.addValue(event_handler);
+					}
 
 				}
 			
@@ -666,7 +668,7 @@ public class Uc2iActions implements VPActionController {
 						String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
 						IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 						
-						String id_from = actors_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
+						String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 						IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						 
 						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -680,8 +682,8 @@ public class Uc2iActions implements VPActionController {
 						associationToEnd.setMultiplicity("1");
 						associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
 						//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-						associationToEnd.setNavigable(1);
-					}
+						associationFromEnd.setNavigable(1);
+					} else {
 				 
 				IAssociation association = IModelElementFactory.instance().createAssociation();
 				
@@ -711,6 +713,7 @@ public class Uc2iActions implements VPActionController {
 				//TRANSIT TO
 				//ITransitProperty transitProp2 = (ITransitProperty) include.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				//transitProp2.addValue(association);
+					}
 			}
 
 		}
