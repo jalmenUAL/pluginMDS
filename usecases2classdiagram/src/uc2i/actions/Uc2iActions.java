@@ -428,8 +428,12 @@ public class Uc2iActions implements VPActionController {
 			
 			if (tousecase.hasStereotype("event")) {
 				
-				 
-				 
+				if (fromactor.hasStereotype("external")) {
+					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_")+list);
+					externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+				} 
+				else { 
+				
 				String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_")+list);
 				IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 				IAttribute attribute = IModelElementFactory.instance().createAttribute();
@@ -444,8 +448,6 @@ public class Uc2iActions implements VPActionController {
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(attribute);
 				transitProp.addValue(event_handler);
-				if (fromactor.hasStereotype("external")) {
-					externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
 				}
 
 			} 
