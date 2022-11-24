@@ -28,8 +28,6 @@ import com.vp.plugin.model.IUseCase;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import com.vp.plugin.model.property.ITransitProperty;
 
-//NOTA: //M QUITE LOS TRANSIT TO A LAS RELACIONES
-
 public class Uc2iActions implements VPActionController {
 
 	@Override
@@ -227,8 +225,8 @@ public class Uc2iActions implements VPActionController {
 					Class.addStereotype("list");
 					ITransitProperty transitProp1 = (ITransitProperty) useCase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 					transitProp1.addValue(ClassItem);
-					//M ITransitProperty transitProp2 = (ITransitProperty) useCase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-					//M transitProp2.addValue(association);
+					ITransitProperty transitProp2 = (ITransitProperty) useCase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+					transitProp2.addValue(association);
 				}
 				ITransitProperty transitProp = (ITransitProperty) useCase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(Class);
@@ -358,16 +356,7 @@ public class Uc2iActions implements VPActionController {
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
-				
-				
-				
-				if (fromactor.hasStereotype("external")) {
-					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
-					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
-					usecase_to.addOperation(event_handler);
-				}
-				else {
-				actor_from.addOperation(event_handler);}
+				actor_from.addOperation(event_handler);
 				//TRANSIT TO
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(attribute);
@@ -381,18 +370,10 @@ public class Uc2iActions implements VPActionController {
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
 					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 					event_handler.setReturnType("void");
-					
-					if (fromactor.hasStereotype("external")) {
-						String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
-						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
-						usecase_to.addOperation(event_handler);
-					}
-					else {
-					actor_from.addOperation(event_handler);}
+					actor_from.addOperation(event_handler);
 					//TRANSIT TO
 					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 					transitProp.addValue(event_handler);
-					
 
 				}
 			
@@ -412,9 +393,10 @@ public class Uc2iActions implements VPActionController {
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
 				actor_from.addOperation(event_handler);
-					
-				if (fromactor.hasStereotype("external")) {
-					
+				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+				transitProp.addValue(event_handler);
+				
+				if (actor_from.hasStereotype("external")) {
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
 					associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
@@ -424,9 +406,8 @@ public class Uc2iActions implements VPActionController {
 					//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationToEnd.setNavigable(1);
 					//TRANSIT TO
-					//M ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-					//M transitProp2.addValue(nassociation);
-					 
+					ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+					transitProp2.addValue(nassociation);	
 					
 				}
 				else {
@@ -439,13 +420,9 @@ public class Uc2iActions implements VPActionController {
 				associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 				associationFromEnd.setNavigable(1);
 				//TRANSIT TO
-				//M ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				//M transitProp2.addValue(nassociation);
-				
+				ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+				transitProp2.addValue(nassociation);
 				}
-				 
-				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				transitProp.addValue(event_handler);
 			}
 
 		}
@@ -482,13 +459,7 @@ public class Uc2iActions implements VPActionController {
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
-				if (fromactor.hasStereotype("external")) {
-					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
-					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to); 
-					usecase_to.addOperation(event_handler);
-				}
-				else {
-				actor_from.addOperation(event_handler);}
+				actor_from.addOperation(event_handler);
 				//TRANSIT TO
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(attribute);
@@ -502,13 +473,7 @@ public class Uc2iActions implements VPActionController {
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
 					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 					event_handler.setReturnType("void");
-					if (fromactor.hasStereotype("external")) {
-						String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
-						IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
-						usecase_to.addOperation(event_handler);
-					}
-					else {
-					actor_from.addOperation(event_handler);}
+					actor_from.addOperation(event_handler);
 					//TRANSIT TO
 					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 					transitProp.addValue(event_handler);
@@ -531,10 +496,11 @@ public class Uc2iActions implements VPActionController {
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
 				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
 				event_handler.setReturnType("void");
-				usecase_to.addOperation(event_handler);
+				actor_from.addOperation(event_handler);
+				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+				transitProp.addValue(event_handler);
 				
- 				if (fromactor.hasStereotype("external")) {
-					
+				if (actor_from.hasStereotype("external")) {
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
 					associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
@@ -544,12 +510,12 @@ public class Uc2iActions implements VPActionController {
 					//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationToEnd.setNavigable(1);
 					//TRANSIT TO
-					//M ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-					//M transitProp2.addValue(nassociation);
-					
+					ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+					transitProp2.addValue(nassociation);	
 					
 				}
 				else {
+				
 				IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 				associationFromEnd.setMultiplicity("1");
 				associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
@@ -559,12 +525,9 @@ public class Uc2iActions implements VPActionController {
 				associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 				associationFromEnd.setNavigable(1);
 				//TRANSIT TO
-				//M ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				//M transitProp2.addValue(nassociation);
-				 
+				ITransitProperty transitProp2 = (ITransitProperty) relationshipEnd.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+				transitProp2.addValue(nassociation);
 				}
-				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				transitProp.addValue(event_handler);
 			}
 
 		}
@@ -655,8 +618,8 @@ public class Uc2iActions implements VPActionController {
 				associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 				associationFromEnd.setNavigable(1);
 				//TRANSIT TO
-				//M ITransitProperty transitProp2 = (ITransitProperty) include.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				//M transitProp2.addValue(association);
+				ITransitProperty transitProp2 = (ITransitProperty) include.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+				transitProp2.addValue(association);
 			}
 
 		}
@@ -699,8 +662,8 @@ public class Uc2iActions implements VPActionController {
 			associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 			associationFromEnd.setNavigable(1);
 			//TRANSIT TO
-			//M ITransitProperty transitProp = (ITransitProperty) extendi.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-			//M transitProp.addValue(association);
+			ITransitProperty transitProp = (ITransitProperty) extendi.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
+			transitProp.addValue(association);
 			
 
 		}
