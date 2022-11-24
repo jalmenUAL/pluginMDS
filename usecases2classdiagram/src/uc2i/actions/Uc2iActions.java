@@ -278,47 +278,7 @@ public class Uc2iActions implements VPActionController {
 
 		}
 
-		// GENERATION OF ASSOCIATIONS OF ACTORS AND USE CASES
-       
-		/*for (int i = 0; i < actors.length; i++) {
-			IModelElement modelElement = actors[i];
-			IActor actor = (IActor) modelElement;
-			Iterator genIter = actor.fromRelationshipEndIterator();
-
-			while (genIter.hasNext()) {
-
-				IRelationshipEnd relationshipEnd = (IRelationshipEnd) genIter.next();
-				IModelElement tousecase = relationshipEnd.getEndRelationship().getTo();
-
-				String id_from = actors_id.get(actor.getName().replaceAll(" ", "_"));
-				IModelElement actor_from = projectManager.getProject().getModelElementById(id_from);
-
-				String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
-				IModelElement usecase_to = projectManager.getProject().getModelElementById(id_to);
-
-				IAssociation association = IModelElementFactory.instance().createAssociation();
-				association.setFrom(actor_from);
-				association.setTo(usecase_to);
-
-				IAssociationEnd associationFromEnd = (IAssociationEnd) association.getFromEnd();
-				associationFromEnd.setMultiplicity("1");
-				associationFromEnd.setName("_" + actor.getName().replaceAll(" ", "_"));
-				 
-
-				IAssociationEnd associationToEnd = (IAssociationEnd) association.getToEnd();
-				associationToEnd.setMultiplicity("1");
-				associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
-				 
-
-				associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
-				associationFromEnd.setNavigable(1);
-				//TRANSIT TO
-				ITransitProperty transitProp = (ITransitProperty) relationshipEnd.getEndRelationship().getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
-				transitProp.addValue(association);
-
-			}
-
-		}*/
+		 
 		
 		// GENERATION OF ASSOCIATIONS OF ACTORS AND USE CASES
 		
@@ -604,7 +564,7 @@ public class Uc2iActions implements VPActionController {
 					//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationFromEnd.setNavigable(1);
 				}
-				else {
+				 
 				String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 				IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 				IAttribute attribute = IModelElementFactory.instance().createAttribute();
@@ -619,7 +579,7 @@ public class Uc2iActions implements VPActionController {
 				ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				transitProp.addValue(attribute);
 				transitProp.addValue(event_handler);
-				}
+				 
 
 			} 
 			else
@@ -647,7 +607,7 @@ public class Uc2iActions implements VPActionController {
 						//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationFromEnd.setNavigable(1);
 					}
-					else {
+					 
 					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_")+list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
@@ -657,7 +617,7 @@ public class Uc2iActions implements VPActionController {
 					//TRANSIT TO
 					ITransitProperty transitProp = (ITransitProperty) tousecase.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 					transitProp.addValue(event_handler);
-					}
+					 
 
 				}
 			
@@ -683,7 +643,7 @@ public class Uc2iActions implements VPActionController {
 						associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
 						//associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationFromEnd.setNavigable(1);
-					} else {
+					}  
 				 
 				IAssociation association = IModelElementFactory.instance().createAssociation();
 				
@@ -713,7 +673,7 @@ public class Uc2iActions implements VPActionController {
 				//TRANSIT TO
 				//ITransitProperty transitProp2 = (ITransitProperty) include.getModelPropertyByName(IModel.PROP_TRANSIT_TO); 
 				//transitProp2.addValue(association);
-					}
+					 
 			}
 
 		}
