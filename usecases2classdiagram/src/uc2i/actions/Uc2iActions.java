@@ -193,7 +193,10 @@ public class Uc2iActions implements VPActionController {
 			} else {
 				IClass Class = IModelElementFactory.instance().createClass();
 				interfacePackage.addChild(Class);
-				Class.setName(clean(useCase.getName()));	
+				Class.setName(clean(useCase.getName()));
+				 
+				
+				
 				if (usecase_id.containsKey(clean(useCase.getName()))) {
 					viewManager.showMessage("Warning: Duplicate use case names");
 				}
