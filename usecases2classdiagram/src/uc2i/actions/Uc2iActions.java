@@ -71,11 +71,11 @@ public class Uc2iActions implements VPActionController {
 				Class.addStereotype("Actor");
 			}
 
-			Class.setName(actor.getName().replaceAll(" ", "_"));
-			if (actors_id.containsKey(actor.getName().replaceAll(" ", "_"))) {
+			Class.setName(clean(actor.getName()));
+			if (actors_id.containsKey(clean(actor.getName()))) {
 				viewManager.showMessage("Warning: Duplicate actor names");
 			}
-			actors_id.put(actor.getName().replaceAll(" ", "_"), Class.getId());
+			actors_id.put(clean(actor.getName()), Class.getId());
 			// TRANSIT TO
 			ITransitProperty transitProp = (ITransitProperty) actor.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
 			transitProp.addValue(Class);
@@ -94,27 +94,27 @@ public class Uc2iActions implements VPActionController {
 				databasePackage.addChild(Class);
 
 				Class.addStereotype("Interface");
-				Class.setName("i" + actor.getName().replaceAll(" ", "_"));
-				if (interfaces_id.containsKey("i" + actor.getName().replaceAll(" ", "_"))) {
+				Class.setName("i" + clean(actor.getName()));
+				if (interfaces_id.containsKey("i" + clean(actor.getName()))) {
 					viewManager.showMessage("Warning: Duplicate actor names");
 				}
-				interfaces_id.put("i" + actor.getName().replaceAll(" ", "_"), Class.getId());
+				interfaces_id.put("i" + clean(actor.getName()), Class.getId());
 
 				IRealization real = IModelElementFactory.instance().createRealization();
 				real.setFrom(Class);
 				real.setTo(ClassMain);
 
-				String id_from = actors_id.get(actor.getName().replaceAll(" ", "_"));
+				String id_from = actors_id.get(clean(actor.getName()));
 				IModelElement act_from = projectManager.getProject().getModelElementById(id_from);
 				IAssociation association = IModelElementFactory.instance().createAssociation();
 				association.setFrom(act_from);
 				association.setTo(Class);
 				IAssociationEnd associationFromEnd = (IAssociationEnd) association.getFromEnd();
 				associationFromEnd.setMultiplicity("1");
-				associationFromEnd.setName("_" + act_from.getName().replaceAll(" ", "_"));
+				associationFromEnd.setName("_" + clean(act_from.getName()));
 				IAssociationEnd associationToEnd = (IAssociationEnd) association.getToEnd();
 				associationToEnd.setMultiplicity("1");
-				associationToEnd.setName("_" + Class.getName().replaceAll(" ", "_"));
+				associationToEnd.setName("_" + clean(Class.getName()));
 				associationFromEnd.setNavigable(1);
 				// TRANSIT TO
 				ITransitProperty transitProp = (ITransitProperty) actor.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
@@ -135,9 +135,9 @@ public class Uc2iActions implements VPActionController {
 				IRelationship relationship = (IRelationship) genIter.next();
 				IModelElement toactor = relationship.getTo();
 				IGeneralization generalizationModel = IModelElementFactory.instance().createGeneralization();
-				String id_from = actors_id.get(actor.getName().replaceAll(" ", "_"));
+				String id_from = actors_id.get(clean(actor.getName()));
 				IModelElement act_from = projectManager.getProject().getModelElementById(id_from);
-				String id_to = actors_id.get(toactor.getName().replaceAll(" ", "_"));
+				String id_to = actors_id.get(clean(toactor.getName()));
 				IModelElement act_to = projectManager.getProject().getModelElementById(id_to);
 				generalizationModel.setFrom(act_from);
 				generalizationModel.setTo(act_to);
@@ -163,9 +163,9 @@ public class Uc2iActions implements VPActionController {
 				IRelationship relationship = (IRelationship) genIter.next();
 				IModelElement toactor = relationship.getTo();
 				IGeneralization generalizationModel = IModelElementFactory.instance().createGeneralization();
-				String id_from = interfaces_id.get("i" + actor.getName().replaceAll(" ", "_"));
+				String id_from = interfaces_id.get("i" + clean(actor.getName()));
 				IModelElement act_from = projectManager.getProject().getModelElementById(id_from);
-				String id_to = interfaces_id.get("i" + toactor.getName().replaceAll(" ", "_"));
+				String id_to = interfaces_id.get("i" + clean(toactor.getName()));
 				IModelElement act_to = projectManager.getProject().getModelElementById(id_to);
 				generalizationModel.setFrom(act_from);
 				generalizationModel.setTo(act_to);
@@ -193,24 +193,34 @@ public class Uc2iActions implements VPActionController {
 			} else {
 				IClass Class = IModelElementFactory.instance().createClass();
 				interfacePackage.addChild(Class);
-				Class.setName(useCase.getName().replaceAll(" ", "_"));
-				if (usecase_id.containsKey(useCase.getName().replaceAll(" ", "_"))) {
+				Class.setName(clean(useCase.getName()));
+				if (usecase_id.containsKey(clean(useCase.getName()))) {
 					viewManager.showMessage("Warning: Duplicate use case names");
 				}
-				usecase_id.put(useCase.getName().replaceAll(" ", "_"), Class.getId());
+				usecase_id.put(clean(useCase.getName()), Class.getId());
 				if (useCase.hasStereotype("list")) {
+					
+					
 
 					IClass ClassItem = IModelElementFactory.instance().createClass();
 					interfacePackage.addChild(ClassItem);
-					ClassItem.setName(useCase.getName().replaceAll(" ", "_") + "_item");
-					usecase_id.put(useCase.getName().replaceAll(" ", "_") + "_item", ClassItem.getId());
+					ClassItem.setName(clean(useCase.getName()) + "_item");
+					usecase_id.put(clean(useCase.getName()) + "_item", ClassItem.getId());
+					
+					Class.addStereotype("list");
+					ITransitProperty transitProp1 = (ITransitProperty) useCase
+							.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
+					transitProp1.addValue(ClassItem);
+					
+					 
+					if (isRoot(modelElement)) {
 
 					IAssociation association = IModelElementFactory.instance().createAssociation();
 					association.setFrom(Class);
 					association.setTo(ClassItem);
 
 					IAssociationEnd associationFromEnd = (IAssociationEnd) association.getFromEnd();
-					associationFromEnd.setMultiplicity("1");
+					//associationFromEnd.setMultiplicity("1");
 					associationFromEnd.setName("_" + Class.getName());
 
 					IAssociationEnd associationToEnd = (IAssociationEnd) association.getToEnd();
@@ -219,13 +229,20 @@ public class Uc2iActions implements VPActionController {
 
 					associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationFromEnd.setNavigable(1);
-					Class.addStereotype("list");
-					ITransitProperty transitProp1 = (ITransitProperty) useCase
-							.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
-					transitProp1.addValue(ClassItem);
+					}
+							
+					
 					// ITransitProperty transitProp2 = (ITransitProperty)
 					// useCase.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
 					// transitProp2.addValue(association);
+					
+					
+					 
+					
+					
+					
+					
+					
 				}
 				ITransitProperty transitProp = (ITransitProperty) useCase
 						.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
@@ -246,9 +263,9 @@ public class Uc2iActions implements VPActionController {
 				if (relationship.getModelType() == "Generalization") {
 					IModelElement tousecase = relationship.getTo();
 					IGeneralization generalizationModel = IModelElementFactory.instance().createGeneralization();
-					String id_from = usecase_id.get(usecase.getName().replaceAll(" ", "_"));
+					String id_from = usecase_id.get(clean(usecase.getName()));
 					IModelElement use_from = projectManager.getProject().getModelElementById(id_from);
-					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
+					String id_to = usecase_id.get(clean(tousecase.getName()));
 					IModelElement use_to = projectManager.getProject().getModelElementById(id_to);
 					generalizationModel.setFrom(use_from);
 					generalizationModel.setTo(use_to);
@@ -262,9 +279,9 @@ public class Uc2iActions implements VPActionController {
 					if (usecase.hasStereotype("list")) {
 						IGeneralization generalizationModelitem = IModelElementFactory.instance()
 								.createGeneralization();
-						String id_fromitem = usecase_id.get(usecase.getName().replaceAll(" ", "_") + "_item");
+						String id_fromitem = usecase_id.get(clean(usecase.getName()) + "_item");
 						IModelElement use_fromitem = projectManager.getProject().getModelElementById(id_fromitem);
-						String id_toitem = usecase_id.get(tousecase.getName().replaceAll(" ", "_") + "_item");
+						String id_toitem = usecase_id.get(clean(tousecase.getName()) + "_item");
 						IModelElement use_toitem = projectManager.getProject().getModelElementById(id_toitem);
 						generalizationModelitem.setFrom(use_fromitem);
 						generalizationModelitem.setTo(use_toitem);
@@ -304,11 +321,11 @@ public class Uc2iActions implements VPActionController {
 				if (tousecase.hasStereotype("event")) {
 
 					if (fromactor.hasStereotype("external")) {
-						String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						String id_from = actors_id.get(clean(fromactor.getName()) + list);
+						externals.put(clean(tousecase.getName()), id_from);
 						IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						IOperation event_handler = IModelElementFactory.instance().createOperation();
-						event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+						event_handler.setName(clean(tousecase.getName()));
 						event_handler.setReturnType("void");
 						actor_from.addOperation(event_handler);
 						// TRANSIT TO
@@ -316,14 +333,14 @@ public class Uc2iActions implements VPActionController {
 								.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
 						transitProp.addValue(event_handler);
 					} else {
-						String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+						String id_from = actors_id.get(clean(fromactor.getName()) + list);
 						IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						IAttribute attribute = IModelElementFactory.instance().createAttribute();
-						attribute.setName(tousecase.getName().replaceAll(" ", "_"));
+						attribute.setName(clean(tousecase.getName()));
 						attribute.setType("event");
 						actor_from.addAttribute(attribute);
 						IOperation event_handler = IModelElementFactory.instance().createOperation();
-						event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+						event_handler.setName(clean(tousecase.getName()));
 						event_handler.setReturnType("void");
 						actor_from.addOperation(event_handler);
 						// TRANSIT TO
@@ -334,10 +351,10 @@ public class Uc2iActions implements VPActionController {
 					}
 
 				} else if (tousecase.hasStereotype("business")) {
-					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+					String id_from = actors_id.get(clean(fromactor.getName()) + list);
 					IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
-					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+					event_handler.setName(clean(tousecase.getName()));
 					event_handler.setReturnType("void");
 					actor_from.addOperation(event_handler);
 					// TRANSIT TO
@@ -346,7 +363,7 @@ public class Uc2iActions implements VPActionController {
 					transitProp.addValue(event_handler);
 
 					if (fromactor.hasStereotype("external")) {
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						externals.put(clean(tousecase.getName()), id_from);
 					}
 
 				}
@@ -355,16 +372,16 @@ public class Uc2iActions implements VPActionController {
 
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 
-					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+					String id_from = actors_id.get(clean(fromactor.getName()) + list);
 					IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
-					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
+					String id_to = usecase_id.get(clean(tousecase.getName()));
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 
 					if (fromactor.hasStereotype("external")) {
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						externals.put(clean(tousecase.getName()), id_from);
 					} else {
 						IOperation event_handler = IModelElementFactory.instance().createOperation();
-						event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+						event_handler.setName(clean(tousecase.getName()));
 						event_handler.setReturnType("void");
 						actor_from.addOperation(event_handler);
 						ITransitProperty transitProp = (ITransitProperty) tousecase
@@ -378,10 +395,10 @@ public class Uc2iActions implements VPActionController {
 					if (fromactor.hasStereotype("external")) {
 						IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 						associationFromEnd.setMultiplicity("1");
-						associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
+						associationFromEnd.setName("_" + clean(actor_from.getName()));
 						IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 						associationToEnd.setMultiplicity("1");
-						associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+						associationToEnd.setName("_" + clean(tousecase.getName()));
 						// associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationToEnd.setNavigable(1);
 						// TRANSIT TO
@@ -391,11 +408,11 @@ public class Uc2iActions implements VPActionController {
 
 					} else {
 						IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
-						associationFromEnd.setMultiplicity("1");
-						associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
+						//associationFromEnd.setMultiplicity("1");
+						associationFromEnd.setName("_" + clean(actor_from.getName()));
 						IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 						associationToEnd.setMultiplicity("1");
-						associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+						associationToEnd.setName("_" + clean(tousecase.getName()));
 						associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationFromEnd.setNavigable(1);
 						// TRANSIT TO
@@ -430,11 +447,11 @@ public class Uc2iActions implements VPActionController {
 				if (tousecase.hasStereotype("event")) {
 
 					if (fromactor.hasStereotype("external")) {
-						String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						String id_from = actors_id.get(clean(fromactor.getName()) + list);
+						externals.put(clean(tousecase.getName()), id_from);
 						IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						IOperation event_handler = IModelElementFactory.instance().createOperation();
-						event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+						event_handler.setName(clean(tousecase.getName()));
 						event_handler.setReturnType("void");
 						actor_from.addOperation(event_handler);
 						// TRANSIT TO
@@ -443,14 +460,14 @@ public class Uc2iActions implements VPActionController {
 						transitProp.addValue(event_handler);
 					} else {
 
-						String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+						String id_from = actors_id.get(clean(fromactor.getName()) + list);
 						IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 						IAttribute attribute = IModelElementFactory.instance().createAttribute();
-						attribute.setName(tousecase.getName().replaceAll(" ", "_"));
+						attribute.setName(clean(tousecase.getName()));
 						attribute.setType("event");
 						actor_from.addAttribute(attribute);
 						IOperation event_handler = IModelElementFactory.instance().createOperation();
-						event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+						event_handler.setName(clean(tousecase.getName()));
 						event_handler.setReturnType("void");
 						actor_from.addOperation(event_handler);
 						// TRANSIT TO
@@ -461,10 +478,10 @@ public class Uc2iActions implements VPActionController {
 					}
 
 				} else if (tousecase.hasStereotype("business")) {
-					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+					String id_from = actors_id.get(clean(fromactor.getName()) + list);
 					IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
-					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+					event_handler.setName(clean(tousecase.getName()));
 					event_handler.setReturnType("void");
 					actor_from.addOperation(event_handler);
 					// TRANSIT TO
@@ -472,7 +489,7 @@ public class Uc2iActions implements VPActionController {
 							.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
 					transitProp.addValue(event_handler);
 					if (fromactor.hasStereotype("external")) {
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						externals.put(clean(tousecase.getName()), id_from);
 					}
 
 				}
@@ -481,20 +498,20 @@ public class Uc2iActions implements VPActionController {
 
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 
-					String id_from = actors_id.get(fromactor.getName().replaceAll(" ", "_") + list);
+					String id_from = actors_id.get(clean(fromactor.getName()) + list);
 					IClass actor_from = (IClass) projectManager.getProject().getModelElementById(id_from);
-					String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
+					String id_to = usecase_id.get(clean(tousecase.getName()));
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 
 					if (fromactor.hasStereotype("external")) {
-						externals.put(tousecase.getName().replaceAll(" ", "_"), id_from);
+						externals.put(clean(tousecase.getName()), id_from);
 					}
 
 					nassociation.setFrom(actor_from);
 					nassociation.setTo(usecase_to);
 
 					IOperation event_handler = IModelElementFactory.instance().createOperation();
-					event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+					event_handler.setName(clean(tousecase.getName()));
 					event_handler.setReturnType("void");
 					actor_from.addOperation(event_handler);
 					ITransitProperty transitProp = (ITransitProperty) tousecase
@@ -504,10 +521,10 @@ public class Uc2iActions implements VPActionController {
 					if (fromactor.hasStereotype("external")) {
 						IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 						associationFromEnd.setMultiplicity("1");
-						associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
+						associationFromEnd.setName("_" + clean(actor_from.getName()));
 						IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 						associationToEnd.setMultiplicity("1");
-						associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+						associationToEnd.setName("_" + clean(tousecase.getName()));
 						// associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationToEnd.setNavigable(1);
 						// TRANSIT TO
@@ -518,11 +535,11 @@ public class Uc2iActions implements VPActionController {
 					} else {
 
 						IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
-						associationFromEnd.setMultiplicity("1");
-						associationFromEnd.setName("_" + actor_from.getName().replaceAll(" ", "_"));
+						//associationFromEnd.setMultiplicity("1");
+						associationFromEnd.setName("_" + clean(actor_from.getName()));
 						IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 						associationToEnd.setMultiplicity("1");
-						associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+						associationToEnd.setName("_" + clean(tousecase.getName()));
 						associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 						associationFromEnd.setNavigable(1);
 						// TRANSIT TO
@@ -559,11 +576,11 @@ public class Uc2iActions implements VPActionController {
 
 			if (tousecase.hasStereotype("event")) {
 
-				if (externals.containsKey(tousecase.getName().replaceAll(" ", "_"))) {
-					String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
+				if (externals.containsKey(clean(tousecase.getName()))) {
+					String extern = externals.get(clean(tousecase.getName()));
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 
-					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+					String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -572,22 +589,22 @@ public class Uc2iActions implements VPActionController {
 					nassociation.setTo(usecase_to);
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
-					associationFromEnd.setName("_" + usecase_from.getName().replaceAll(" ", "_"));
+					associationFromEnd.setName("_" + clean(usecase_from.getName()));
 					IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 					associationToEnd.setMultiplicity("1");
-					associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
+					associationToEnd.setName("_" + clean(usecase_to.getName()));
 					// associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationFromEnd.setNavigable(1);
 				}
 
-				String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+				String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 				IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 				IAttribute attribute = IModelElementFactory.instance().createAttribute();
-				attribute.setName(tousecase.getName().replaceAll(" ", "_"));
+				attribute.setName(clean(tousecase.getName()));
 				attribute.setType("event");
 				usecase_from.addAttribute(attribute);
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
-				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+				event_handler.setName(clean(tousecase.getName()));
 				event_handler.setReturnType("void");
 				usecase_from.addOperation(event_handler);
 				// TRANSIT TO
@@ -598,11 +615,11 @@ public class Uc2iActions implements VPActionController {
 
 			} else if (tousecase.hasStereotype("business")) {
 
-				if (externals.containsKey(tousecase.getName().replaceAll(" ", "_"))) {
-					String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
+				if (externals.containsKey(clean(tousecase.getName()))) {
+					String extern = externals.get(clean(tousecase.getName()));
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 
-					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+					String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -611,18 +628,18 @@ public class Uc2iActions implements VPActionController {
 					nassociation.setTo(usecase_to);
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
-					associationFromEnd.setName("_" + usecase_from.getName().replaceAll(" ", "_"));
+					associationFromEnd.setName("_" + clean(usecase_from.getName()));
 					IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 					associationToEnd.setMultiplicity("1");
-					associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
+					associationToEnd.setName("_" + clean(usecase_to.getName()));
 					// associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationFromEnd.setNavigable(1);
 				}
 
-				String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+				String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 				IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
-				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+				event_handler.setName(clean(tousecase.getName()));
 				event_handler.setReturnType("void");
 				usecase_from.addOperation(event_handler);
 				// TRANSIT TO
@@ -634,11 +651,11 @@ public class Uc2iActions implements VPActionController {
 
 			else {
 
-				if (externals.containsKey(tousecase.getName().replaceAll(" ", "_"))) {
-					String extern = externals.get(tousecase.getName().replaceAll(" ", "_"));
+				if (externals.containsKey(clean(tousecase.getName()))) {
+					String extern = externals.get(clean(tousecase.getName()));
 					IAssociation nassociation = IModelElementFactory.instance().createAssociation();
 
-					String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+					String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 					IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
 
 					IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(extern);
@@ -647,38 +664,41 @@ public class Uc2iActions implements VPActionController {
 					nassociation.setTo(usecase_to);
 					IAssociationEnd associationFromEnd = (IAssociationEnd) nassociation.getFromEnd();
 					associationFromEnd.setMultiplicity("1");
-					associationFromEnd.setName("_" + usecase_from.getName().replaceAll(" ", "_"));
+					associationFromEnd.setName("_" + clean(usecase_from.getName()));
 					IAssociationEnd associationToEnd = (IAssociationEnd) nassociation.getToEnd();
 					associationToEnd.setMultiplicity("1");
-					associationToEnd.setName("_" + usecase_to.getName().replaceAll(" ", "_"));
+					associationToEnd.setName("_" + clean(usecase_to.getName()));
 					// associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 					associationFromEnd.setNavigable(1);
 				}
 
 				IAssociation association = IModelElementFactory.instance().createAssociation();
 
-				String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+				String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 				IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
-				String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
+				String id_to = usecase_id.get(clean(tousecase.getName()));
 				IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 
 				association.setFrom(usecase_from);
 				association.setTo(usecase_to);
 
 				IOperation event_handler = IModelElementFactory.instance().createOperation();
-				event_handler.setName(tousecase.getName().replaceAll(" ", "_"));
+				event_handler.setName(clean(tousecase.getName()));
 				event_handler.setReturnType("void");
 				usecase_from.addOperation(event_handler);
+				
+				
+				
 				ITransitProperty transitProp = (ITransitProperty) tousecase
 						.getModelPropertyByName(IModel.PROP_TRANSIT_TO);
 				transitProp.addValue(event_handler);
 
 				IAssociationEnd associationFromEnd = (IAssociationEnd) association.getFromEnd();
-				associationFromEnd.setMultiplicity("1");
-				associationFromEnd.setName("_" + fromusecase.getName().replaceAll(" ", "_"));
+				//associationFromEnd.setMultiplicity("1");
+				associationFromEnd.setName("_" + clean(fromusecase.getName()));
 				IAssociationEnd associationToEnd = (IAssociationEnd) association.getToEnd();
 				associationToEnd.setMultiplicity("1");
-				associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+				associationToEnd.setName("_" + clean(tousecase.getName()));
 				associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 				associationFromEnd.setNavigable(1);
 				// TRANSIT TO
@@ -712,9 +732,9 @@ public class Uc2iActions implements VPActionController {
 			}
 
 			IAssociation association = IModelElementFactory.instance().createAssociation();
-			String id_from = usecase_id.get(fromusecase.getName().replaceAll(" ", "_") + list);
+			String id_from = usecase_id.get(clean(fromusecase.getName()) + list);
 			IClass usecase_from = (IClass) projectManager.getProject().getModelElementById(id_from);
-			String id_to = usecase_id.get(tousecase.getName().replaceAll(" ", "_"));
+			String id_to = usecase_id.get(clean(tousecase.getName()));
 			IClass usecase_to = (IClass) projectManager.getProject().getModelElementById(id_to);
 
 			association.setFrom(usecase_from);
@@ -722,11 +742,11 @@ public class Uc2iActions implements VPActionController {
 
 			usecase_to.addStereotype("extends");
 			IAssociationEnd associationFromEnd = (IAssociationEnd) association.getFromEnd();
-			associationFromEnd.setMultiplicity("1");
-			associationFromEnd.setName("_" + fromusecase.getName().replaceAll(" ", "_"));
+			//associationFromEnd.setMultiplicity("1");
+			associationFromEnd.setName("_" + clean(fromusecase.getName()));
 			IAssociationEnd associationToEnd = (IAssociationEnd) association.getToEnd();
 			associationToEnd.setMultiplicity("1");
-			associationToEnd.setName("_" + tousecase.getName().replaceAll(" ", "_"));
+			associationToEnd.setName("_" + clean(tousecase.getName()));
 			associationFromEnd.setAggregationKind(IAssociationEnd.AGGREGATION_KIND_COMPOSITED);
 			associationFromEnd.setNavigable(1);
 			// TRANSIT TO
@@ -736,6 +756,32 @@ public class Uc2iActions implements VPActionController {
 
 		}
 
+	}
+	
+	public Boolean isRoot(IModelElement modelElement) {
+		
+		Boolean root=true;
+		
+		IUseCase usecase = (IUseCase) modelElement;
+		Iterator<?> genIter = usecase.toRelationshipIterator();
+
+		while (genIter.hasNext()) {
+
+			IRelationship relationship = (IRelationship) genIter.next();
+			if (relationship.getModelType() == "Generalization") {
+				
+				root=false;
+				
+			}
+		}
+		return root;
+		
+	}
+	
+	public String clean(String s) {
+		
+		s = s.replaceAll("[^a-zA-Z0-9]", "");  
+		return s;
 	}
 
 	@Override

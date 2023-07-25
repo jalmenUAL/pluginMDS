@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Program Files/Visual Paradigm 16.3/lib/openapi.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Visual Paradigm 17.0/lib/openapi.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
